@@ -1,45 +1,88 @@
 package com.example.homeawaytestapp.view.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.example.homeawaytestapp.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.homeawaytestapp.databinding.FragmentSearchBinding
+import com.example.homeawaytestapp.model.api.data.Venue
+import com.example.homeawaytestapp.utils.hideKeyboard
+import com.example.homeawaytestapp.view.adapter.VenuesSearchAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
+    private val searchAdapter by lazy(::initAdapter)
 
     private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater)
+        initSearchRecyclerView()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchViewModel.venuesLiveData.observe(viewLifecycleOwner, {
+            if (it.isSuccess) {
+                submitVenuesList(it.getOrDefault(emptyList()))
+            } else  {
+                // todo: error message
+            }
+        })
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        binding.searchInput.doOnTextChanged { text, _, _, _ ->
+            text ?: return@doOnTextChanged
+            searchViewModel.searchVenues(text.toString())
         }
 
-        searchViewModel.liveData.observe(viewLifecycleOwner, {
-            binding.textviewFirst.text = it
-        })
+        binding.searchVenueRecyclerView
+            .addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    requireActivity().hideKeyboard()
+                }
+            })
+    }
+
+    private fun submitVenuesList(venues: List<Venue>) {
+        searchAdapter.submitList(venues)
+        if (venues.isNotEmpty()) {
+            binding.fab.show()
+        } else {
+            binding.fab.hide()
+        }
+    }
+
+    private fun initAdapter(): VenuesSearchAdapter {
+        return VenuesSearchAdapter { venue ->
+            Log.d("VENUES", "on venue clicked: ${venue.name}")
+        }
+    }
+
+    private fun initSearchRecyclerView() {
+        with(binding.searchVenueRecyclerView) {
+            adapter = searchAdapter
+            layoutManager = LinearLayoutManager(requireContext()).apply {
+                orientation = RecyclerView.VERTICAL
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.searchVenueRecyclerView.clearOnScrollListeners()
     }
 }
