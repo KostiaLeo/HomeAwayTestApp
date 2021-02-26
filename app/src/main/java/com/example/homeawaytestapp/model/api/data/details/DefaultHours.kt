@@ -1,0 +1,10 @@
+package com.example.homeawaytestapp.model.api.data.details
+
+data class DefaultHours(
+    val dayData: List<Any>,
+    val isLocalHoliday: Boolean,
+    val isOpen: Boolean,
+    val richStatus: RichStatus,
+    val status: String,
+    val timeframes: List<Timeframe>
+)

@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homeawaytestapp.databinding.VenueSearchItemBinding
-import com.example.homeawaytestapp.model.api.data.Venue
+import com.example.homeawaytestapp.model.api.data.VenueShort
 import com.example.homeawaytestapp.utils.load
 import com.example.homeawaytestapp.utils.toKmOrM
 
 class VenuesSearchAdapter(
-    private val onVenueClicked: (Venue) -> Unit
-) : ListAdapter<Venue, VenuesSearchViewHolder>(Venue.DiffUtilCallback()) {
+    private val onVenueClicked: (VenueShort) -> Unit
+) : ListAdapter<VenueShort, VenuesSearchViewHolder>(VenueShort.DiffUtilCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VenuesSearchViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -33,7 +33,7 @@ class VenuesSearchViewHolder(
     private val binding: VenueSearchItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(venue: Venue) {
+    fun bind(venue: VenueShort) {
         binding.venueName.text = venue.name
 
         val distance = venue.location.distance.toKmOrM(binding.root.context)

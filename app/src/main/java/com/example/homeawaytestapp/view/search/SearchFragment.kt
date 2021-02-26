@@ -1,17 +1,17 @@
 package com.example.homeawaytestapp.view.search
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homeawaytestapp.databinding.FragmentSearchBinding
-import com.example.homeawaytestapp.model.api.data.Venue
+import com.example.homeawaytestapp.model.api.data.VenueShort
 import com.example.homeawaytestapp.utils.hideKeyboard
 import com.example.homeawaytestapp.view.adapter.VenuesSearchAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +57,7 @@ class SearchFragment : Fragment() {
             })
     }
 
-    private fun submitVenuesList(venues: List<Venue>) {
+    private fun submitVenuesList(venues: List<VenueShort>) {
         searchAdapter.submitList(venues)
         if (venues.isNotEmpty()) {
             binding.fab.show()
@@ -68,7 +68,8 @@ class SearchFragment : Fragment() {
 
     private fun initAdapter(): VenuesSearchAdapter {
         return VenuesSearchAdapter { venue ->
-            Log.d("VENUES", "on venue clicked: ${venue.name}")
+            val action = SearchFragmentDirections.actionFirstFragmentToDetailsFragment(venue.id)
+            findNavController().navigate(action)
         }
     }
 

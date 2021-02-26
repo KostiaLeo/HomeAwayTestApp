@@ -1,8 +1,9 @@
 package com.example.homeawaytestapp.model.api.data
 
 import androidx.recyclerview.widget.DiffUtil
+import com.google.gson.annotations.SerializedName
 
-data class Venue(
+data class VenueShort(
     val categories: List<Category>,
     val delivery: Delivery,
     val hasPerk: Boolean,
@@ -12,12 +13,12 @@ data class Venue(
     val referralId: String,
     val venuePage: VenuePage
 ) {
-    class DiffUtilCallback : DiffUtil.ItemCallback<Venue>() {
-        override fun areItemsTheSame(oldItem: Venue, newItem: Venue): Boolean {
+    class DiffUtilCallback : DiffUtil.ItemCallback<VenueShort>() {
+        override fun areItemsTheSame(oldItem: VenueShort, newItem: VenueShort): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Venue, newItem: Venue): Boolean {
+        override fun areContentsTheSame(oldItem: VenueShort, newItem: VenueShort): Boolean {
             return oldItem == newItem
         }
     }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "41124374659",
+    "project_id": "homeawayapp",
+    "storage_bucket": "homeawayapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41124374659:android:c85ddc71034fe91ba513b6",
+        "android_client_info": {
+          "package_name": "com.example.homeawaytestapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "41124374659-ailpvu6p3vlq9sqnkf3sfjajppc8ault.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB_mBtvbDrilLgXREKZyYWqVk7UEMZZDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41124374659-ailpvu6p3vlq9sqnkf3sfjajppc8ault.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
