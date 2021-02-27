@@ -154,8 +154,12 @@ class DetailsFragment : Fragment() {
 
     private fun bindContactInfo(venue: Venue) {
         binding.callIcon.setOnClickListener {
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${venue.contact.phone}"))
-            startActivity(intent)
+            if (venue.contact.phone.isNotEmpty()) {
+                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${venue.contact.phone}"))
+                startActivity(intent)
+            } else {
+                errorSnackBar("No phone provided")
+            }
         }
 
         val twitterUserName = venue.contact.twitter

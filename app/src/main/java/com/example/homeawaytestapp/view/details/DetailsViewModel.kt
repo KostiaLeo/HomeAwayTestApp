@@ -24,12 +24,11 @@ class DetailsViewModel @Inject constructor(
 
     fun loadVenue(id: String) {
         viewModelScope.launch {
+            if (venueLiveData.value != null) return@launch
+
             _loadingLiveData.value = true
-
             val result = detailsRepository.runCatching { loadVenueDetails(id) }
-
             _venueLiveData.value = result
-
             _loadingLiveData.value = false
         }
     }
