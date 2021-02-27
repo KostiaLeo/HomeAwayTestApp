@@ -14,6 +14,9 @@ class SearchRepositoryImpl @Inject constructor(
     override fun searchVenues(query: String): Flow<Result<List<VenueShort>>> {
         return flow {
             val venues = venuesApi.searchVenues(query).response.venues
+                .sortedBy {
+                    it.location.distance
+                }
             emit(Result.success(venues))
         }.catch { error ->
             emit(Result.failure(error))
