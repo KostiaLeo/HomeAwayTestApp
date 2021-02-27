@@ -1,6 +1,8 @@
 package com.example.homeawaytestapp.model.api.data.details
 
+import com.google.gson.annotations.SerializedName
+
 data class Photos(
     val count: Int,
-    val groups: List<GroupXXXX>
+    @SerializedName("groups") val detailPhotoGroups: List<DetailPhotoGroup>
 )

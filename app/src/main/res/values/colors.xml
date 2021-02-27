@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="black_trans_80">#CC000000</color>
+
+    <color name="green">#367A39</color>
+    <color name="red">@android:color/holo_red_dark</color>
 </resources>

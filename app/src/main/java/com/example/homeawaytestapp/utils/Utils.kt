@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import com.example.homeawaytestapp.R
 import java.text.DecimalFormat
 
+typealias AndroidLocation = android.location.Location
 
 fun Activity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
