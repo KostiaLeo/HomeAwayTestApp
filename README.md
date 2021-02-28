@@ -1,5 +1,5 @@
 # HomeAwayTestApp
-<h3>Application allowing users to find places in Seattle, Washington, by the keywords, browser search result at list and google map, view details of each place.</h3>
+<h3>Application that allows users to find places in Seattle, Washington, by the keywords, browser search result at list and google map, view details of each place.</h3>
 The app contains 3 screens:
 <ul>
 <li><b>Search screen: </b><br/>The screen with EditText where user type search keywords (e.g. Pizza, Tea, Caffee) and application perform dynamic API-request and display result typeahead.Each result item is clickable and displays
@@ -37,4 +37,4 @@ API <-> Repository <-> ViewModel <-> View
 <h4>For developers:</h4>
 <p>If you're developer, you could perform simple operation of pulling the project from GitHub using the repository link</p>
 <h4>For users:</h4>
-<p>The APK file is deployed <a href="https://drive.google.com/file/d/1vXGQxPsLflrDtKfQw5wMBPZCaJ6KHOoa/view?usp=sharing">in the Google Drive</a> and you can dounload it and install.</p>
+<p>The APK file is deployed <a href="https://drive.google.com/file/d/1vXGQxPsLflrDtKfQw5wMBPZCaJ6KHOoa/view?usp=sharing">on the Google Drive</a> and you can download it and install.</p>
