@@ -1,6 +1,6 @@
 package com.example.homeawaytestapp.model.api.data.search
 
-data class Location(
+data class VenueShortLocation(
     val address: String,
     val cc: String,
     val city: String,

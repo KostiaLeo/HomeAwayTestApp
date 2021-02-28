@@ -74,7 +74,6 @@ class SearchMapFragment : Fragment() {
 
         googleMap.setOnInfoWindowClickListener { marker ->
             val id = (marker.tag as String)
-
             val action = SearchMapFragmentDirections.actionSearchMapFragmentToDetailsFragment(id)
             findNavController().navigate(action)
         }
@@ -109,5 +108,10 @@ class SearchMapFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 }

@@ -8,7 +8,7 @@ data class VenueShort(
     val delivery: Delivery,
     val hasPerk: Boolean,
     val id: String,
-    val location: Location,
+    val location: VenueShortLocation,
     val name: String,
     val referralId: String,
     val venuePage: VenuePage
