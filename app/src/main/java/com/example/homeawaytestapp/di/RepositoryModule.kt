@@ -1,9 +1,9 @@
 package com.example.homeawaytestapp.di
 
-import com.example.homeawaytestapp.model.repository.SearchRepository
-import com.example.homeawaytestapp.model.repository.SearchRepositoryImpl
 import com.example.homeawaytestapp.model.repository.details.DetailsRepository
 import com.example.homeawaytestapp.model.repository.details.DetailsRepositoryImpl
+import com.example.homeawaytestapp.model.repository.search.SearchRepository
+import com.example.homeawaytestapp.model.repository.search.SearchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

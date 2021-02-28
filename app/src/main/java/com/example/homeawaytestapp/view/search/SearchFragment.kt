@@ -1,19 +1,21 @@
 package com.example.homeawaytestapp.view.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homeawaytestapp.R
 import com.example.homeawaytestapp.databinding.FragmentSearchBinding
-import com.example.homeawaytestapp.model.api.data.VenueShort
+import com.example.homeawaytestapp.model.api.data.search.VenueShort
+import com.example.homeawaytestapp.utils.hide
 import com.example.homeawaytestapp.utils.hideKeyboard
 import com.example.homeawaytestapp.view.adapter.VenuesSearchAdapter
 import com.example.homeawaytestapp.view.map.VENUES_PARAM
@@ -24,7 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var searchAdapter: VenuesSearchAdapter
+    private val searchAdapter by lazy(::initAdapter)
+    private lateinit var inputTextWatcher: TextWatcher
 
     private val searchViewModel: SearchViewModel by viewModels()
 
@@ -34,7 +37,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater)
-        initSearchRecyclerView()
+        initUI()
         return binding.root
     }
 
@@ -47,11 +50,20 @@ class SearchFragment : Fragment() {
                 errorSnackBar()
             })
         })
+    }
 
-        binding.searchInput.doOnTextChanged { text, _, _, _ ->
-            text ?: return@doOnTextChanged
-            searchViewModel.searchVenues(text.toString())
+    private fun submitVenuesList(venues: List<VenueShort>) {
+        searchAdapter.submitList(venues)
+        if (venues.isNotEmpty()) {
+            binding.fab.show()
+        } else {
+            binding.fab.hide()
         }
+        binding.greetingTv.hide()
+    }
+
+    private fun initUI() {
+        initSearchRecyclerView()
 
         binding.searchVenueRecyclerView
             .addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -66,33 +78,41 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun submitVenuesList(venues: List<VenueShort>) {
-        searchAdapter.submitList(venues)
-        if (venues.isNotEmpty()) {
-            binding.fab.show()
-        } else {
-            binding.fab.hide()
-        }
-    }
-
     private fun initSearchRecyclerView() {
         with(binding.searchVenueRecyclerView) {
-            adapter = VenuesSearchAdapter { venue ->
-                val action = SearchFragmentDirections.actionFirstFragmentToDetailsFragment(venue.id)
-                findNavController().navigate(action)
-            }
+            adapter = searchAdapter
             layoutManager = LinearLayoutManager(requireContext()).apply {
                 orientation = RecyclerView.VERTICAL
             }
         }
     }
 
-    private fun errorSnackBar(message: String = "error occurred") {
-        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+    private fun initAdapter() = VenuesSearchAdapter { venue ->
+        val action = SearchFragmentDirections.actionFirstFragmentToDetailsFragment(venue.id)
+        findNavController().navigate(action)
+    }
+
+    // we need to register textWatcher onStart (remove it onStop) in order to avoid redundant
+    // auto text change event on screen rotation (-> useless web api call)
+    override fun onStart() {
+        super.onStart()
+        inputTextWatcher = binding.searchInput.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrEmpty()) return@doOnTextChanged
+            searchViewModel.searchVenues(text.toString())
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.searchInput.removeTextChangedListener(inputTextWatcher)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding.searchVenueRecyclerView.clearOnScrollListeners()
+    }
+
+    private fun errorSnackBar(message: String = getString(R.string.default_error_message)) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
 }

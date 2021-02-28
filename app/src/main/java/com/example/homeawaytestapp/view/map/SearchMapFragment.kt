@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeawaytestapp.databinding.SearchMapFragmentBinding
-import com.example.homeawaytestapp.model.api.data.VenueShort
+import com.example.homeawaytestapp.model.api.data.search.VenueShort
 import com.example.homeawaytestapp.utils.MAIN_LATITUDE
 import com.example.homeawaytestapp.utils.MAIN_LONGITUDE
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -20,12 +23,12 @@ import dagger.hilt.android.AndroidEntryPoint
 const val VENUES_PARAM = "venues"
 
 @AndroidEntryPoint
-class SearchMapFragment : Fragment(), OnMapReadyCallback {
+class SearchMapFragment : Fragment() {
 
     private val viewModel: SearchMapViewModel by viewModels()
     private lateinit var binding: SearchMapFragmentBinding
     private val mapView: MapView
-    get() = binding.map
+        get() = binding.map
 
     private lateinit var googleMap: GoogleMap
 
@@ -50,13 +53,11 @@ class SearchMapFragment : Fragment(), OnMapReadyCallback {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        mapView.getMapAsync(this)
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-        addVenuesMarkers()
-        setupCamera()
+        mapView.getMapAsync { googleMap ->
+            this.googleMap = googleMap
+            addVenuesMarkers()
+            setupCamera()
+        }
     }
 
     private fun addVenuesMarkers() {

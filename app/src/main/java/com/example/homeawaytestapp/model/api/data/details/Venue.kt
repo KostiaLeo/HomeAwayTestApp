@@ -36,7 +36,7 @@ data class Venue(
     val stats: Stats,
     val storeId: String,
     val timeZone: String,
-    val tips: TipsX,
+    val tips: VenueTips,
     val url: String,
     val verified: Boolean
 )

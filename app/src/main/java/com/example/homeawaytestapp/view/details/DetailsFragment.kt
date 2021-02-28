@@ -14,9 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.homeawaytestapp.R
-import com.example.homeawaytestapp.databinding.DetailsFragmentBinding
+import com.example.homeawaytestapp.databinding.FragmentDetailsBinding
 import com.example.homeawaytestapp.model.api.data.details.Venue
 import com.example.homeawaytestapp.utils.*
 import com.example.homeawaytestapp.view.adapter.VenuePhotosAdapter
@@ -26,11 +25,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.roundToInt
 
 const val TAG = "VENUES_SCREEN"
+const val CENTER = "center"
+const val DESTINATION = "destination"
 
 @AndroidEntryPoint
 class DetailsFragment : Fragment() {
 
-    private lateinit var binding: DetailsFragmentBinding
+    private lateinit var binding: FragmentDetailsBinding
     private val args: DetailsFragmentArgs by navArgs()
     private val viewModel: DetailsViewModel by viewModels()
 
@@ -45,7 +46,7 @@ class DetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DetailsFragmentBinding.inflate(inflater)
+        binding = FragmentDetailsBinding.inflate(inflater)
         initPhotosRV()
         return binding.root
     }
@@ -54,14 +55,7 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.venueLiveData.observe(viewLifecycleOwner, { venueResult ->
-            venueResult.fold({
-                displayVenue(it)
-            }, {
-                errorMessageToast()
-                requireActivity().onBackPressed()
-                Log.e(TAG, "error loading venue: ${it.localizedMessage}", it)
-                it.printStackTrace()
-            })
+            venueResult.fold(::displayVenue, ::handleError)
         })
 
         viewModel.loadingLiveData.observe(viewLifecycleOwner, { isLoading ->
@@ -71,18 +65,6 @@ class DetailsFragment : Fragment() {
                 showContent()
             }
         })
-    }
-
-    private fun showContent() {
-        binding.contentProgressBar.hide()
-        binding.appBarLayout.show()
-        binding.venueContent.show()
-    }
-
-    private fun showProgress() {
-        binding.contentProgressBar.show()
-        binding.appBarLayout.hide()
-        binding.venueContent.hide()
     }
 
     private fun displayVenue(venue: Venue) {
@@ -98,10 +80,9 @@ class DetailsFragment : Fragment() {
     private fun bindGoogleMap(venue: Venue) {
         val link = buildString {
             append("$GOOGLE_MAPS_STATIC_BASE_LINK=${venue.location.lat},${venue.location.lng}")
-            append("&markers=$MAIN_LATITUDE, $MAIN_LONGITUDE")
+            append("&markers=color:blue%7C$MAIN_LATITUDE, $MAIN_LONGITUDE")
             append("&markers=${venue.location.lat}, ${venue.location.lng}")
             append("&size=1000x700")
-            append("&zoom=15")
             append("&key=$GOOGLE_MAPS_KEY")
         }
 
@@ -110,22 +91,26 @@ class DetailsFragment : Fragment() {
 
     private fun bindTitleInfo(venue: Venue) {
         binding.venueName.text = venue.name
-        binding.categories.text = venue.categories.joinToString(separator = ",") { it.name }
+        binding.categories.text = venue.categories.joinToString(separator = ", ") { it.name }
+
         binding.venueRating.run {
             text = venue.rating.toString()
             try {
                 setTextColor(Color.parseColor("#${venue.ratingColor}"))
             } catch (e: Exception) {
+                Log.e(TAG, "rating color is invalid: ${e.localizedMessage}", e)
             }
         }
+
         binding.likes.text = venue.likes.summary
+
         try {
             binding.status.run {
                 text = venue.hours.status
                 if (venue.hours.isOpen) {
-                    setTextColor(resources.getColor(R.color.green))
+                    setTextColor(requireActivity().resolveColor(R.color.green))
                 } else {
-                    setTextColor(resources.getColor(R.color.red))
+                    setTextColor(requireActivity().resolveColor(R.color.red))
                 }
             }
         } catch (e: Exception) {
@@ -135,12 +120,12 @@ class DetailsFragment : Fragment() {
 
     private fun bindAddress(venue: Venue) {
         binding.address.text = venue.location.formattedAddress.joinToString(separator = "\n") { it }
-        val center = AndroidLocation("center").apply {
+        val center = AndroidLocation(CENTER).apply {
             latitude = MAIN_LATITUDE
             longitude = MAIN_LONGITUDE
         }
 
-        val destination = AndroidLocation("destination").apply {
+        val destination = AndroidLocation(DESTINATION).apply {
             latitude = venue.location.lat
             longitude = venue.location.lng
         }
@@ -148,23 +133,34 @@ class DetailsFragment : Fragment() {
         binding.distance.text =
             center.distanceTo(destination).roundToInt().toKmOrM(requireContext())
         binding.direction.setOnClickListener {
-            val gmmIntentUri =
-                Uri.parse("geo:${MAIN_LATITUDE},${MAIN_LONGITUDE}?q=${venue.location.lat},${venue.location.lng}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            mapIntent.resolveActivity(requireActivity().packageManager)?.let {
-                startActivity(mapIntent)
-            }
+            navigateToGoogleMaps(venue)
+        }
+    }
+
+    private fun navigateToGoogleMaps(venue: Venue) {
+        val gmmIntentUri =
+            Uri.parse("geo:${MAIN_LATITUDE},${MAIN_LONGITUDE}?q=${venue.location.lat},${venue.location.lng}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage(GOOGLE_MAPS_PACKAGE)
+
+        if (mapIntent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivity(mapIntent)
+        } else {
+            errorMessage(getString(R.string.no_google_maps))
         }
     }
 
     private fun bindContactInfo(venue: Venue) {
         binding.callIcon.setOnClickListener {
-            if (venue.contact.phone.isNotEmpty()) {
-                val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${venue.contact.phone}"))
-                startActivity(intent)
-            } else {
-                errorMessage("No phone provided")
+            try {
+                if (venue.contact.phone.isNotEmpty()) {
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${venue.contact.phone}"))
+                    startActivity(intent)
+                } else {
+                    errorMessage(getString(R.string.call_error_message))
+                }
+            } catch (e: Exception) {
+                errorMessage(getString(R.string.call_error_message))
             }
         }
 
@@ -188,7 +184,7 @@ class DetailsFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(venue.url))
                 startActivity(intent)
             } catch (e: Exception) {
-                errorMessage("No web browser provided")
+                errorMessage(getString(R.string.website_error_message))
             }
         }
 
@@ -223,7 +219,7 @@ class DetailsFragment : Fragment() {
         binding.hours.text = try {
             venue.hours.timeframes.firstOrNull()?.open?.firstOrNull()?.renderedTime.orEmpty()
         } catch (e: Exception) {
-            "No info"
+            getString(R.string.no_hours_info)
         }
     }
 
@@ -249,12 +245,30 @@ class DetailsFragment : Fragment() {
         }
     }
 
-    private fun errorMessage(message: String = "error occurred") {
+    private fun showContent() {
+        binding.contentProgressBar.hide()
+        binding.appBarLayout.show()
+        binding.venueContent.show()
+    }
+
+    private fun showProgress() {
+        binding.contentProgressBar.show()
+        binding.appBarLayout.hide()
+        binding.venueContent.hide()
+    }
+
+    private fun handleError(e: Throwable) {
+        errorMessageToast()
+        requireActivity().onBackPressed()
+        Log.e(TAG, "error loading venue: ${e.localizedMessage}", e)
+        e.printStackTrace()
+    }
+
+    private fun errorMessage(message: String = getString(R.string.default_error_message)) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
 
-    private fun errorMessageToast(message: String = "error occurred") {
+    private fun errorMessageToast(message: String = getString(R.string.default_error_message)) {
         Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
     }
-
 }

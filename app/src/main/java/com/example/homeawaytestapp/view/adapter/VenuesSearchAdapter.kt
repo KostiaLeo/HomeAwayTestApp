@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.homeawaytestapp.databinding.VenueSearchItemBinding
-import com.example.homeawaytestapp.model.api.data.VenueShort
+import com.example.homeawaytestapp.model.api.data.search.VenueShort
 import com.example.homeawaytestapp.utils.load
 import com.example.homeawaytestapp.utils.toKmOrM
 

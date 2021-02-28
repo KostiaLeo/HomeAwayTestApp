@@ -4,7 +4,7 @@ data class Hours(
     val dayData: List<Any>,
     val isLocalHoliday: Boolean,
     val isOpen: Boolean,
-    val richStatus: RichStatusX,
+    val richStatus: RichStatusHours,
     val status: String,
-    val timeframes: List<TimeframeX>
+    val timeframes: List<TimeframeHours>
 )

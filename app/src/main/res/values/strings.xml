@@ -4,12 +4,28 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="km">km</string>
     <string name="m">m</string>
+    <string name="address_title">Address</string>
+    <string name="go_to_maps">Go to Google maps</string>
+    <string name="contacts">Contacts and info</string>
+    <string name="call">Call</string>
+    <string name="twitter">Twitter</string>
+    <string name="website">Web page</string>
+    <string name="foursquare">4Square</string>
+    <string name="photos">Photos</string>
+    <string name="no_photos">No photos</string>
+    <string name="no_hours_info">No info</string>
+    <string name="hours">Hours</string>
+    <string name="default_error_message">An error occurred</string>
+    <string name="call_error_message">No phone provided</string>
+    <string name="website_error_message">No web page provided</string>
+    <string name="no_google_maps">Google maps is not available</string>
+    <string name="search_input_hint">Type whatever you\'re looking for</string>
+    <string name="welcome_text">Hi, HomeAway team!) I\'m Konstantin, Android developer that would really like to work with you on the project and make it better as much as I can (even more)).\n\nI hope you\'re going to enjoy reviewing my code) (And appreciate the app launcher icon)) I really had fun creating this app, so I\'d like you to have fun checking it out as well).
+        So, I\'m looking forward to discuss this task, the project and my skills on the interview and show all my best.\n\nHave a nice day! See you)
+    </string>
+
+    <string name="venue_map_content_description">Venue static map</string>
 </resources>

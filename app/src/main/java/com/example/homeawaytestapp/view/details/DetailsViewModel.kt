@@ -1,11 +1,9 @@
 package com.example.homeawaytestapp.view.details
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.homeawaytestapp.model.api.data.details.Venue
 import com.example.homeawaytestapp.model.repository.details.DetailsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +25,10 @@ class DetailsViewModel @Inject constructor(
             if (venueLiveData.value != null) return@launch
 
             _loadingLiveData.value = true
-            val result = detailsRepository.runCatching { loadVenueDetails(id) }
+
+            val result = runCatching { detailsRepository.loadVenueDetails(id) }
             _venueLiveData.value = result
+
             _loadingLiveData.value = false
         }
     }

@@ -7,7 +7,7 @@ data class DetailPhoto(
     val height: Int,
     val id: String,
     val prefix: String,
-    val source: SourceX,
+    val source: SourceDetailPhoto,
     val suffix: String,
     val visibility: String,
     val width: Int
