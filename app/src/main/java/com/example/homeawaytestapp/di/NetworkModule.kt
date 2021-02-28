@@ -1,16 +1,16 @@
 package com.example.homeawaytestapp.di
 
-import android.util.Log
 import com.example.homeawaytestapp.model.api.VenuesApi
 import com.example.homeawaytestapp.utils.BASE_URL
+import com.example.homeawaytestapp.utils.CONNECTION_TIMEOUT
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,12 +29,7 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient().newBuilder()
-            .addInterceptor{ chain ->
-                val request = chain.request()
-                Log.d("OkHttp", "REQUEST: ${request.url()}")
-                val response = chain.proceed(request)
-//                Log.d("OkHttp", "RESPONSE: ${response.body()}")
-                response
-            }.build()
+            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+            .build()
     }
 }

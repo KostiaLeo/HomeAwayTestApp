@@ -258,7 +258,7 @@ class DetailsFragment : Fragment() {
     }
 
     private fun handleError(e: Throwable) {
-        errorMessageToast()
+        errorMessageToast(getString(R.string.daily_quota_over))
         requireActivity().onBackPressed()
         Log.e(TAG, "error loading venue: ${e.localizedMessage}", e)
         e.printStackTrace()

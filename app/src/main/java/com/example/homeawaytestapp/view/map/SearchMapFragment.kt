@@ -64,15 +64,19 @@ class SearchMapFragment : Fragment() {
     private fun addVenuesMarkers() {
         venues.forEach { venue ->
             val latLng = LocationMapper.mapVenueLocationToLatLng(venue.location)
-            val marker = MarkerOptions().position(latLng)
+            val marker = MarkerOptions().position(latLng).title(venue.name).apply {
+                venue.categories.firstOrNull()?.let {
+                    snippet(it.name)
+                }
+            }
             googleMap.addMarker(marker).tag = venue.id
         }
 
-        googleMap.setOnMarkerClickListener { marker ->
+        googleMap.setOnInfoWindowClickListener { marker ->
             val id = (marker.tag as String)
+
             val action = SearchMapFragmentDirections.actionSearchMapFragmentToDetailsFragment(id)
             findNavController().navigate(action)
-            false
         }
     }
 
