@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.homeawaytestapp.databinding.SearchMapFragmentBinding
 import com.example.homeawaytestapp.model.api.data.search.VenueShort
+import com.example.homeawaytestapp.utils.LocationMapper
 import com.example.homeawaytestapp.utils.MAIN_LATITUDE
 import com.example.homeawaytestapp.utils.MAIN_LONGITUDE
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -62,7 +63,7 @@ class SearchMapFragment : Fragment() {
 
     private fun addVenuesMarkers() {
         venues.forEach { venue ->
-            val latLng = venue.location.mapToLatLng()
+            val latLng = LocationMapper.mapVenueLocationToLatLng(venue.location)
             val marker = MarkerOptions().position(latLng)
             googleMap.addMarker(marker).tag = venue.id
         }

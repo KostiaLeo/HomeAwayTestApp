@@ -1,7 +1,5 @@
 package com.example.homeawaytestapp.model.api.data.search
 
-import com.google.android.gms.maps.model.LatLng
-
 data class Location(
     val address: String,
     val cc: String,
@@ -16,8 +14,4 @@ data class Location(
     val neighborhood: String,
     val postalCode: String,
     val state: String
-) {
-    fun mapToLatLng(): LatLng {
-        return LatLng(lat, lng)
-    }
-}
+)
