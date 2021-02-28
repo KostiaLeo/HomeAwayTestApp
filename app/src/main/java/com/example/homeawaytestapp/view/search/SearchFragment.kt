@@ -74,7 +74,7 @@ class SearchFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             val args = bundleOf(VENUES_PARAM to searchAdapter.currentList)
-            findNavController().navigate(R.id.action_FirstFragment_to_searchMapFragment, args)
+            findNavController().navigate(R.id.action_SearchFragment_to_searchMapFragment, args)
         }
     }
 
@@ -88,7 +88,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun initAdapter() = VenuesSearchAdapter { venue ->
-        val action = SearchFragmentDirections.actionFirstFragmentToDetailsFragment(venue.id)
+        val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(venue.id)
         findNavController().navigate(action)
     }
 

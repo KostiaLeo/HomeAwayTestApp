@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/SearchFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/SearchFragment"
         android:name="com.example.homeawaytestapp.view.search.SearchFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/search_fragment_label"
         tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/action_FirstFragment_to_detailsFragment"
+            android:id="@+id/action_SearchFragment_to_DetailsFragment"
             app:destination="@id/DetailsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_FirstFragment_to_searchMapFragment"
+            android:id="@+id/action_SearchFragment_to_searchMapFragment"
             app:destination="@id/searchMapFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/DetailsFragment"
         android:name="com.example.homeawaytestapp.view.details.DetailsFragment"
-        android:label="details_fragment"
+        android:label="@string/details_fragment_label"
         tools:layout="@layout/fragment_details">
         <argument
             android:name="venueId"
@@ -38,8 +38,9 @@
     <fragment
         android:id="@+id/searchMapFragment"
         android:name="com.example.homeawaytestapp.view.map.SearchMapFragment"
-        android:label="search_map_fragment"
+        android:label="@string/map_fragment_label"
         tools:layout="@layout/search_map_fragment">
+
         <action
             android:id="@+id/action_searchMapFragment_to_DetailsFragment"
             app:destination="@id/DetailsFragment"
