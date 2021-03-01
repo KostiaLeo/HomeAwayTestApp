@@ -39,8 +39,6 @@ class DetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) return
-
         viewModel.loadVenue(args.venueId)
     }
 
