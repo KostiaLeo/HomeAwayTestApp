@@ -1,6 +1,9 @@
 package com.example.homeawaytestapp.view.details
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.homeawaytestapp.model.api.data.details.Venue
 import com.example.homeawaytestapp.model.repository.details.DetailsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +25,6 @@ class DetailsViewModel @Inject constructor(
 
     fun loadVenue(id: String) {
         viewModelScope.launch {
-            if (venueLiveData.value != null) return@launch
-
             _loadingLiveData.value = true
 
             val result = runCatching { detailsRepository.loadVenueDetails(id) }

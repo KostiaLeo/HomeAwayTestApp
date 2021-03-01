@@ -37,7 +37,7 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater)
-        initUI()
+        initUI(savedInstanceState)
         return binding.root
     }
 
@@ -62,7 +62,7 @@ class SearchFragment : Fragment() {
         binding.greetingTv.hide()
     }
 
-    private fun initUI() {
+    private fun initUI(savedInstanceState: Bundle?) {
         initSearchRecyclerView()
 
         binding.searchVenueRecyclerView
@@ -75,6 +75,11 @@ class SearchFragment : Fragment() {
         binding.fab.setOnClickListener {
             val args = bundleOf(VENUES_PARAM to searchAdapter.currentList)
             findNavController().navigate(R.id.action_SearchFragment_to_searchMapFragment, args)
+        }
+
+        inputTextWatcher = binding.searchInput.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrEmpty() || savedInstanceState != null) return@doOnTextChanged
+            searchViewModel.searchVenues(text.toString())
         }
     }
 
@@ -92,24 +97,10 @@ class SearchFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    // we need to register textWatcher onStart (remove it onStop) in order to avoid redundant
-    // auto text change event on screen rotation (-> useless web api call)
-    override fun onStart() {
-        super.onStart()
-        inputTextWatcher = binding.searchInput.doOnTextChanged { text, _, _, _ ->
-            if (text.isNullOrEmpty()) return@doOnTextChanged
-            searchViewModel.searchVenues(text.toString())
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        binding.searchInput.removeTextChangedListener(inputTextWatcher)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding.searchVenueRecyclerView.clearOnScrollListeners()
+        binding.searchInput.removeTextChangedListener(inputTextWatcher)
     }
 
     private fun errorSnackBar(message: String = getString(R.string.default_error_message)) {
